@@ -1,4 +1,4 @@
-module github.com/vmihailenco/msgpack/v5
+module github.com/gstfrenkel/msgpack
 
 go 1.24
 

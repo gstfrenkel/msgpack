@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"github.com/gstfrenkel/msgpack"
 	"math"
 	"math/big"
 	"net/url"
@@ -12,9 +13,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gstfrenkel/msgpack/msgpcode"
 	"github.com/stretchr/testify/require"
-	"github.com/vmihailenco/msgpack/v5"
-	"github.com/vmihailenco/msgpack/v5/msgpcode"
 )
 
 //------------------------------------------------------------------------------

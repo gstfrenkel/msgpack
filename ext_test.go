@@ -3,12 +3,12 @@ package msgpack_test
 import (
 	"bytes"
 	"encoding/hex"
+	"github.com/gstfrenkel/msgpack"
 	"testing"
 	"time"
 
+	"github.com/gstfrenkel/msgpack/msgpcode"
 	"github.com/stretchr/testify/require"
-	"github.com/vmihailenco/msgpack/v5"
-	"github.com/vmihailenco/msgpack/v5/msgpcode"
 )
 
 func init() {
