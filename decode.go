@@ -699,10 +699,3 @@ func readNGrow(r io.Reader, b []byte, n int) ([]byte, error) {
 
 	return b, nil
 }
-
-func min(a, b int) int { //nolint:unparam
-	if a <= b {
-		return a
-	}
-	return b
-}

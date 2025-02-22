@@ -22,11 +22,6 @@ type CustomDecoder interface {
 
 type RawMessage []byte
 
-var (
-	_ CustomEncoder = (RawMessage)(nil)
-	_ CustomDecoder = (*RawMessage)(nil)
-)
-
 func (m RawMessage) EncodeMsgpack(enc *Encoder) error {
 	return enc.write(m)
 }
