@@ -1,8 +1,6 @@
 module github.com/vmihailenco/msgpack/extra/appengine
 
-go 1.15
-
-replace github.com/vmihailenco/msgpack/v5 => ../..
+go 1.24
 
 require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1
