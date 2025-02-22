@@ -27,13 +27,13 @@ func ExampleMarshal() {
 }
 
 func ExampleMarshal_mapStringInterface() {
-	in := map[string]interface{}{"foo": 1, "hello": "world"}
+	in := map[string]any{"foo": 1, "hello": "world"}
 	b, err := msgpack.Marshal(in)
 	if err != nil {
 		panic(err)
 	}
 
-	var out map[string]interface{}
+	var out map[string]any
 	err = msgpack.Unmarshal(b, &out)
 	if err != nil {
 		panic(err)
@@ -59,8 +59,8 @@ func ExampleDecoder_SetMapDecoder() {
 
 	dec := msgpack.NewDecoder(buf)
 
-	// Causes decoder to produce map[string]string instead of map[string]interface{}.
-	dec.SetMapDecoder(func(d *msgpack.Decoder) (interface{}, error) {
+	// Causes decoder to produce map[string]string instead of map[string]any.
+	dec.SetMapDecoder(func(d *msgpack.Decoder) (any, error) {
 		n, err := d.DecodeMapLen()
 		if err != nil {
 			return nil, err
@@ -92,9 +92,9 @@ func ExampleDecoder_SetMapDecoder() {
 }
 
 func ExampleDecoder_Query() {
-	b, err := msgpack.Marshal([]map[string]interface{}{
-		{"id": 1, "attrs": map[string]interface{}{"phone": 12345}},
-		{"id": 2, "attrs": map[string]interface{}{"phone": 54321}},
+	b, err := msgpack.Marshal([]map[string]any{
+		{"id": 1, "attrs": map[string]any{"phone": 12345}},
+		{"id": 2, "attrs": map[string]any{"phone": 54321}},
 	})
 	if err != nil {
 		panic(err)
@@ -199,7 +199,7 @@ func ExampleMarshal_omitEmpty() {
 }
 
 func ExampleMarshal_escapedNames() {
-	og := map[string]interface{}{
+	og := map[string]any{
 		"something:special": uint(123),
 		"hello, world":      "hello!",
 	}

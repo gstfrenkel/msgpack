@@ -256,7 +256,7 @@ func TestEmptyTimeMarshalWithInterface(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var out interface{}
+	var out any
 	err = msgpack.Unmarshal(b, &out)
 	if err != nil {
 		t.Fatal(err)
@@ -298,16 +298,16 @@ func TestNoPanicOnUnsupportedKey(t *testing.T) {
 }
 
 func TestMapDefault(t *testing.T) {
-	in := map[string]interface{}{
+	in := map[string]any{
 		"foo": "bar",
-		"hello": map[string]interface{}{
+		"hello": map[string]any{
 			"foo": "bar",
 		},
 	}
 	b, err := msgpack.Marshal(in)
 	require.Nil(t, err)
 
-	var out map[string]interface{}
+	var out map[string]any
 	err = msgpack.Unmarshal(b, &out)
 	require.Nil(t, err)
 	require.Equal(t, in, out)
@@ -315,7 +315,7 @@ func TestMapDefault(t *testing.T) {
 
 func TestRawMessage(t *testing.T) {
 	type In struct {
-		Foo map[string]interface{}
+		Foo map[string]any
 	}
 
 	type Out struct {
@@ -323,11 +323,11 @@ func TestRawMessage(t *testing.T) {
 	}
 
 	type Out2 struct {
-		Foo interface{}
+		Foo any
 	}
 
 	b, err := msgpack.Marshal(&In{
-		Foo: map[string]interface{}{
+		Foo: map[string]any{
 			"hello": "world",
 		},
 	})
@@ -355,7 +355,7 @@ func TestRawMessage(t *testing.T) {
 
 func TestInterface(t *testing.T) {
 	type Interface struct {
-		Foo interface{}
+		Foo any
 	}
 
 	in := Interface{Foo: "foo"}
@@ -381,7 +381,7 @@ func TestNaN(t *testing.T) {
 }
 
 func TestSetSortMapKeys(t *testing.T) {
-	in := map[string]interface{}{
+	in := map[string]any{
 		"a": "a",
 		"b": "b",
 		"c": "c",
@@ -513,7 +513,7 @@ func ExampleMarshal_ignore_simple_zero_structs_when_tagged_with_omitempty() {
 }
 
 type (
-	Value   interface{}
+	Value   any
 	Wrapper struct {
 		Value Value `msgpack:"v,omitempty"`
 	}

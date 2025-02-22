@@ -68,7 +68,7 @@ func ExampleRegisterExt() {
 			panic(err)
 		}
 
-		var v interface{}
+		var v any
 		err = msgpack.Unmarshal(b, &v)
 		if err != nil {
 			panic(err)
@@ -93,7 +93,7 @@ func ExampleRegisterExt() {
 		// override ext
 		msgpack.RegisterExt(1, (*OneMoreSecondEventTime)(nil))
 
-		var v interface{}
+		var v any
 		err = msgpack.Unmarshal(b, &v)
 		if err != nil {
 			panic(err)
@@ -112,7 +112,7 @@ func ExampleRegisterExt() {
 
 		// override ext
 		msgpack.RegisterExt(1, (*EventTime)(nil))
-		var v interface{}
+		var v any
 		err = msgpack.Unmarshal(b, &v)
 		if err != nil {
 			panic(err)
@@ -138,7 +138,7 @@ func ExampleUnregisterExt() {
 
 		msgpack.UnregisterExt(1)
 
-		var v interface{}
+		var v any
 		err = msgpack.Unmarshal(b, &v)
 		wanted := "msgpack: unknown ext id=1"
 		if err.Error() != wanted {
@@ -163,7 +163,7 @@ func ExampleUnregisterExt() {
 		}
 
 		msgpack.UnregisterExt(1)
-		var v interface{}
+		var v any
 		err = msgpack.Unmarshal(b, &v)
 		wanted := "msgpack: unknown ext id=1"
 		if err.Error() != wanted {

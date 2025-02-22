@@ -41,7 +41,7 @@ func UnregisterExt(extID int8) {
 
 func RegisterExtEncoder(
 	extID int8,
-	value interface{},
+	value any,
 	encoder func(enc *Encoder, v reflect.Value) ([]byte, error),
 ) {
 	unregisterExtEncoder(extID)
@@ -104,7 +104,7 @@ func makeExtEncoderAddr(extEncoder encoderFunc) encoderFunc {
 
 func RegisterExtDecoder(
 	extID int8,
-	value interface{},
+	value any,
 	decoder func(dec *Decoder, v reflect.Value, extLen int) error,
 ) {
 	unregisterExtDecoder(extID)
@@ -243,7 +243,7 @@ func (d *Decoder) parseExtLen(c byte) (int, error) {
 	}
 }
 
-func (d *Decoder) decodeInterfaceExt(c byte) (interface{}, error) {
+func (d *Decoder) decodeInterfaceExt(c byte) (any, error) {
 	extID, extLen, err := d.extHeader(c)
 	if err != nil {
 		return nil, err

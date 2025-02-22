@@ -45,7 +45,7 @@ var (
 // Register registers encoder and decoder functions for a value.
 // This is low level API and in most cases you should prefer implementing
 // CustomEncoder/CustomDecoder or Marshaler/Unmarshaler interfaces.
-func Register(value interface{}, enc encoderFunc, dec decoderFunc) {
+func Register(value any, enc encoderFunc, dec decoderFunc) {
 	typ := reflect.TypeOf(value)
 	if enc != nil {
 		typeEncMap.Store(typ, enc)

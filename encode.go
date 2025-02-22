@@ -42,7 +42,7 @@ func (bw byteWriter) WriteByte(c byte) error {
 //------------------------------------------------------------------------------
 
 var encPool = sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		return NewEncoder(nil)
 	},
 }
@@ -57,7 +57,7 @@ func PutEncoder(enc *Encoder) {
 }
 
 // Marshal returns the MessagePack encoding of v.
-func Marshal(v interface{}) ([]byte, error) {
+func Marshal(v any) ([]byte, error) {
 	enc := GetEncoder()
 
 	var buf bytes.Buffer
@@ -133,7 +133,7 @@ func (e *Encoder) ResetWriter(w io.Writer) {
 // Supported map types are:
 //   - map[string]string
 //   - map[string]bool
-//   - map[string]interface{}
+//   - map[string]any
 func (e *Encoder) SetSortMapKeys(on bool) *Encoder {
 	if on {
 		e.flags |= sortMapKeysFlag
@@ -196,7 +196,7 @@ func (e *Encoder) UseInternedStrings(on bool) {
 	}
 }
 
-func (e *Encoder) Encode(v interface{}) error {
+func (e *Encoder) Encode(v any) error {
 	switch v := v.(type) {
 	case nil:
 		return e.EncodeNil()
@@ -226,7 +226,7 @@ func (e *Encoder) Encode(v interface{}) error {
 	return e.EncodeValue(reflect.ValueOf(v))
 }
 
-func (e *Encoder) EncodeMulti(v ...interface{}) error {
+func (e *Encoder) EncodeMulti(v ...any) error {
 	for _, vv := range v {
 		if err := e.Encode(vv); err != nil {
 			return err

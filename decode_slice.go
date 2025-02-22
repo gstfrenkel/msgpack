@@ -153,7 +153,7 @@ func decodeArrayValue(d *Decoder, v reflect.Value) error {
 	return nil
 }
 
-func (d *Decoder) DecodeSlice() ([]interface{}, error) {
+func (d *Decoder) DecodeSlice() ([]any, error) {
 	c, err := d.readCode()
 	if err != nil {
 		return nil, err
@@ -161,7 +161,7 @@ func (d *Decoder) DecodeSlice() ([]interface{}, error) {
 	return d.decodeSlice(c)
 }
 
-func (d *Decoder) decodeSlice(c byte) ([]interface{}, error) {
+func (d *Decoder) decodeSlice(c byte) ([]any, error) {
 	n, err := d.arrayLen(c)
 	if err != nil {
 		return nil, err
@@ -170,7 +170,7 @@ func (d *Decoder) decodeSlice(c byte) ([]interface{}, error) {
 		return nil, nil
 	}
 
-	s := make([]interface{}, 0, n)
+	s := make([]any, 0, n)
 	for i := 0; i < n; i++ {
 		v, err := d.decodeInterfaceCond()
 		if err != nil {

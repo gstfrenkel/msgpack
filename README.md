@@ -19,7 +19,7 @@
 
 ## Features
 
-- Primitives, arrays, maps, structs, time.Time and interface{}.
+- Primitives, arrays, maps, structs, time.Time and any.
 - Appengine \*datastore.Key and datastore.Cursor.
 - [CustomEncoder]/[CustomDecoder] interfaces for custom encoding.
 - [Extensions](https://pkg.go.dev/github.com/vmihailenco/msgpack/v5#example-RegisterExt) to encode

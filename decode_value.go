@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	interfaceType = reflect.TypeOf((*interface{})(nil)).Elem()
+	interfaceType = reflect.TypeOf((*any)(nil)).Elem()
 	stringType    = reflect.TypeOf((*string)(nil)).Elem()
 	boolType      = reflect.TypeOf((*bool)(nil)).Elem()
 )
