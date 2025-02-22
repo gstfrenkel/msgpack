@@ -12,13 +12,13 @@ import (
 type NoIntern struct {
 	A string
 	B string
-	C interface{}
+	C any
 }
 
 type Intern struct {
-	A string      `msgpack:",intern"`
-	B string      `msgpack:",intern"`
-	C interface{} `msgpack:",intern"`
+	A string `msgpack:",intern"`
+	B string `msgpack:",intern"`
+	C any    `msgpack:",intern"`
 }
 
 func TestInternedString(t *testing.T) {
@@ -111,7 +111,7 @@ func TestResetDict(t *testing.T) {
 }
 
 func TestMapWithInternedString(t *testing.T) {
-	type M map[string]interface{}
+	type M map[string]any
 
 	dict := []string{"hello world", "foo bar"}
 

@@ -11,7 +11,7 @@ import (
 type queryResult struct {
 	query       string
 	key         string
-	values      []interface{}
+	values      []any
 	hasAsterisk bool
 }
 
@@ -29,7 +29,7 @@ func (q *queryResult) nextKey() {
 // Query extracts data specified by the query from the msgpack stream skipping
 // any other data. Query consists of map keys and array indexes separated with dot,
 // e.g. key1.0.key2.
-func (d *Decoder) Query(query string) ([]interface{}, error) {
+func (d *Decoder) Query(query string) ([]any, error) {
 	res := queryResult{
 		query: query,
 	}

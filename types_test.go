@@ -238,7 +238,7 @@ type ExtTestField struct {
 //------------------------------------------------------------------------------
 
 type encoderTest struct {
-	in     interface{}
+	in     any
 	wanted string
 }
 
@@ -308,7 +308,7 @@ func TestEncoder(t *testing.T) {
 }
 
 type floatEncoderTest struct {
-	in      interface{}
+	in      any
 	wanted  string
 	compact bool
 }
@@ -355,7 +355,7 @@ func TestFloatEncoding(t *testing.T) {
 
 type decoderTest struct {
 	b   []byte
-	out interface{}
+	out any
 	err string
 }
 
@@ -402,14 +402,14 @@ type EmbeddedTime struct {
 }
 
 type (
-	interfaceAlias     interface{}
+	interfaceAlias     any
 	byteAlias          byte
 	uint8Alias         uint8
 	stringAlias        string
 	sliceByte          []byte
 	sliceString        []string
 	mapStringString    map[string]string
-	mapStringInterface map[string]interface{}
+	mapStringInterface map[string]any
 )
 
 type StructTest struct {
@@ -420,13 +420,13 @@ type StructTest struct {
 type typeTest struct {
 	*testing.T
 
-	in       interface{}
-	out      interface{}
+	in       any
+	out      any
 	encErr   string
 	decErr   string
 	wantnil  bool
 	wantzero bool
-	wanted   interface{}
+	wanted   any
 }
 
 func (t typeTest) String() string {
@@ -489,9 +489,9 @@ var (
 		{in: [3]byte{1, 2, 3}, out: new([3]byte)},
 		{in: [3]byte{1, 2, 3}, out: new([2]byte), decErr: "[2]uint8 len is 2, but msgpack has 3 elements"},
 
-		{in: nil, out: new([]interface{}), wantnil: true},
-		{in: nil, out: new([]interface{}), wantnil: true},
-		{in: []interface{}{int8(1), "hello"}, out: new([]interface{})},
+		{in: nil, out: new([]any), wantnil: true},
+		{in: nil, out: new([]any), wantnil: true},
+		{in: []any{int8(1), "hello"}, out: new([]any)},
 
 		{in: nil, out: new([]int), wantnil: true},
 		{in: nil, out: &[]int{1, 2}, wantnil: true},
@@ -515,7 +515,7 @@ var (
 		{in: nil, out: &map[string]string{"foo": "bar"}, wantnil: true},
 		{in: nil, out: &map[int]int{1: 2}, wantnil: true},
 		{in: map[string]string(nil), out: new(map[string]string)},
-		{in: map[string]interface{}{"foo": nil}, out: new(map[string]interface{})},
+		{in: map[string]any{"foo": nil}, out: new(map[string]any)},
 		{in: mapStringString{"foo": "bar"}, out: new(mapStringString)},
 		{in: map[stringAlias]stringAlias{"foo": "bar"}, out: new(map[stringAlias]stringAlias)},
 		{in: mapStringInterface{"foo": "bar"}, out: new(mapStringInterface)},
@@ -625,7 +625,7 @@ var (
 	}
 )
 
-func indirect(viface interface{}) interface{} {
+func indirect(viface any) any {
 	v := reflect.ValueOf(viface)
 	for v.Kind() == reflect.Ptr {
 		v = v.Elem()
@@ -677,7 +677,7 @@ func TestTypes(t *testing.T) {
 		}
 
 		out := indirect(test.out)
-		var wanted interface{}
+		var wanted any
 		if test.wantzero {
 			typ := reflect.TypeOf(out)
 			wanted = reflect.Zero(typ).Interface()
@@ -700,19 +700,19 @@ func TestTypes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		var dst interface{}
+		var dst any
 		dec := msgpack.NewDecoder(bytes.NewReader(b))
-		dec.SetMapDecoder(func(dec *msgpack.Decoder) (interface{}, error) {
+		dec.SetMapDecoder(func(dec *msgpack.Decoder) (any, error) {
 			return dec.DecodeUntypedMap()
 		})
 
 		err = dec.Decode(&dst)
 		if err != nil {
-			t.Fatalf("Unmarshal into interface{} failed: %s (%s)", err, test)
+			t.Fatalf("Unmarshal into any failed: %s (%s)", err, test)
 		}
 
 		dec = msgpack.NewDecoder(bytes.NewReader(b))
-		dec.SetMapDecoder(func(dec *msgpack.Decoder) (interface{}, error) {
+		dec.SetMapDecoder(func(dec *msgpack.Decoder) (any, error) {
 			return dec.DecodeUntypedMap()
 		})
 
@@ -778,7 +778,7 @@ func TestStringsBin(t *testing.T) {
 		require.Nil(t, err)
 		require.Equal(t, v.(string), test.in)
 
-		var dst interface{} = ""
+		var dst any = ""
 		err = msgpack.Unmarshal(b, &dst)
 		require.EqualError(t, err, "msgpack: Decode(non-pointer string)")
 	}
@@ -845,7 +845,7 @@ func TestBin(t *testing.T) {
 			t.Fatalf("%x != %x", v, test.in)
 		}
 
-		var dst interface{} = make([]byte, 0)
+		var dst any = make([]byte, 0)
 		err = msgpack.Unmarshal(b, &dst)
 		if err.Error() != "msgpack: Decode(non-pointer []uint8)" {
 			t.Fatal(err)
@@ -908,7 +908,7 @@ func TestUint64(t *testing.T) {
 			t.Fatalf("%d != %d", out2, int64(test.in))
 		}
 
-		var out3 interface{} = uint64(0)
+		var out3 any = uint64(0)
 		err = msgpack.Unmarshal(buf.Bytes(), &out3)
 		if err.Error() != "msgpack: Decode(non-pointer uint64)" {
 			t.Fatal(err)
@@ -995,7 +995,7 @@ func TestInt64(t *testing.T) {
 			t.Fatalf("%d != %d", out2, uint64(test.in))
 		}
 
-		var out3 interface{} = int64(0)
+		var out3 any = int64(0)
 		err = msgpack.Unmarshal(buf.Bytes(), &out3)
 		if err.Error() != "msgpack: Decode(non-pointer int64)" {
 			t.Fatal(err)
@@ -1064,7 +1064,7 @@ func TestFloat32(t *testing.T) {
 			t.Fatalf("%f != %f", v, test.in)
 		}
 
-		var dst interface{} = float32(0)
+		var dst any = float32(0)
 		err = msgpack.Unmarshal(b, &dst)
 		if err.Error() != "msgpack: Decode(non-pointer float32)" {
 			t.Fatal(err)
@@ -1129,7 +1129,7 @@ func TestFloat64(t *testing.T) {
 			t.Fatalf("%f != %f", v, test.in)
 		}
 
-		var dst interface{} = float64(0)
+		var dst any = float64(0)
 		err = msgpack.Unmarshal(b, &dst)
 		if err.Error() != "msgpack: Decode(non-pointer float64)" {
 			t.Fatal(err)

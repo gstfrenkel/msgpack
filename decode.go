@@ -34,7 +34,7 @@ type bufReader interface {
 //------------------------------------------------------------------------------
 
 var decPool = sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		return NewDecoder(nil)
 	},
 }
@@ -53,7 +53,7 @@ func PutDecoder(dec *Decoder) {
 
 // Unmarshal decodes the MessagePack-encoded data and stores the result
 // in the value pointed to by v.
-func Unmarshal(data []byte, v interface{}) error {
+func Unmarshal(data []byte, v any) error {
 	dec := GetDecoder()
 	dec.UsePreallocateValues(true)
 	dec.Reset(bytes.NewReader(data))
@@ -68,7 +68,7 @@ func Unmarshal(data []byte, v interface{}) error {
 type Decoder struct {
 	r          io.Reader
 	s          io.ByteScanner
-	mapDecoder func(*Decoder) (interface{}, error)
+	mapDecoder func(*Decoder) (any, error)
 	structTag  string
 	buf        []byte
 	rec        []byte
@@ -126,12 +126,12 @@ func (d *Decoder) ResetReader(r io.Reader) {
 	}
 }
 
-func (d *Decoder) SetMapDecoder(fn func(*Decoder) (interface{}, error)) {
+func (d *Decoder) SetMapDecoder(fn func(*Decoder) (any, error)) {
 	d.mapDecoder = fn
 }
 
 // UseLooseInterfaceDecoding causes decoder to use DecodeInterfaceLoose
-// to decode msgpack value into Go interface{}.
+// to decode msgpack value into Go any.
 func (d *Decoder) UseLooseInterfaceDecoding(on bool) {
 	if on {
 		d.flags |= looseInterfaceDecodingFlag
@@ -191,7 +191,7 @@ func (d *Decoder) Buffered() io.Reader {
 }
 
 //nolint:gocyclo
-func (d *Decoder) Decode(v interface{}) error {
+func (d *Decoder) Decode(v any) error {
 	var err error
 	switch v := v.(type) {
 	case *string:
@@ -272,7 +272,7 @@ func (d *Decoder) Decode(v interface{}) error {
 		return d.decodeStringSlicePtr(v)
 	case *map[string]string:
 		return d.decodeMapStringStringPtr(v)
-	case *map[string]interface{}:
+	case *map[string]any:
 		return d.decodeMapStringInterfacePtr(v)
 	case *time.Duration:
 		if v != nil {
@@ -311,7 +311,7 @@ func (d *Decoder) Decode(v interface{}) error {
 	return d.DecodeValue(vv)
 }
 
-func (d *Decoder) DecodeMulti(v ...interface{}) error {
+func (d *Decoder) DecodeMulti(v ...any) error {
 	for _, vv := range v {
 		if err := d.Decode(vv); err != nil {
 			return err
@@ -320,7 +320,7 @@ func (d *Decoder) DecodeMulti(v ...interface{}) error {
 	return nil
 }
 
-func (d *Decoder) decodeInterfaceCond() (interface{}, error) {
+func (d *Decoder) decodeInterfaceCond() (any, error) {
 	if d.flags&looseInterfaceDecodingFlag != 0 {
 		return d.DecodeInterfaceLoose()
 	}
@@ -398,7 +398,7 @@ func (d *Decoder) DecodeDuration() (time.Duration, error) {
 // DecodeInterface should be used only when you don't know the type of value
 // you are decoding. For example, if you are decoding number it is better to use
 // DecodeInt64 for negative numbers and DecodeUint64 for positive numbers.
-func (d *Decoder) DecodeInterface() (interface{}, error) {
+func (d *Decoder) DecodeInterface() (any, error) {
 	c, err := d.readCode()
 	if err != nil {
 		return nil, err
@@ -463,7 +463,7 @@ func (d *Decoder) DecodeInterface() (interface{}, error) {
 		return d.decodeInterfaceExt(c)
 	}
 
-	return 0, fmt.Errorf("msgpack: unknown code %x decoding interface{}", c)
+	return 0, fmt.Errorf("msgpack: unknown code %x decoding any", c)
 }
 
 // DecodeInterfaceLoose is like DecodeInterface except that:
@@ -471,7 +471,7 @@ func (d *Decoder) DecodeInterface() (interface{}, error) {
 //   - uint8, uint16, and uint32 are converted to uint64,
 //   - float32 is converted to float64.
 //   - []byte is converted to string.
-func (d *Decoder) DecodeInterfaceLoose() (interface{}, error) {
+func (d *Decoder) DecodeInterfaceLoose() (any, error) {
 	c, err := d.readCode()
 	if err != nil {
 		return nil, err
@@ -521,7 +521,7 @@ func (d *Decoder) DecodeInterfaceLoose() (interface{}, error) {
 		return d.decodeInterfaceExt(c)
 	}
 
-	return 0, fmt.Errorf("msgpack: unknown code %x decoding interface{}", c)
+	return 0, fmt.Errorf("msgpack: unknown code %x decoding any", c)
 }
 
 // Skip skips next value.

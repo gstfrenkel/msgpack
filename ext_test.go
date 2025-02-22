@@ -46,7 +46,7 @@ func TestEncodeDecodeExtHeader(t *testing.T) {
 	_, err = buf.Write(payload)
 	require.Nil(t, err)
 
-	var dst interface{}
+	var dst any
 	err = msgpack.Unmarshal(buf.Bytes(), &dst)
 	require.Nil(t, err)
 
@@ -77,7 +77,7 @@ func TestExt(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var dst interface{}
+	var dst any
 	err = msgpack.Unmarshal(b, &dst)
 	if err != nil {
 		t.Fatal(err)
@@ -106,7 +106,7 @@ func TestExt(t *testing.T) {
 func TestUnknownExt(t *testing.T) {
 	b := []byte{byte(msgpcode.FixExt1), 2, 0}
 
-	var dst interface{}
+	var dst any
 	err := msgpack.Unmarshal(b, &dst)
 	if err == nil {
 		t.Fatalf("got nil, wanted error")
@@ -119,13 +119,13 @@ func TestUnknownExt(t *testing.T) {
 }
 
 func TestSliceOfTime(t *testing.T) {
-	in := []interface{}{time.Now()}
+	in := []any{time.Now()}
 	b, err := msgpack.Marshal(in)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	var out []interface{}
+	var out []any
 	err = msgpack.Unmarshal(b, &out)
 	if err != nil {
 		t.Fatal(err)

@@ -26,7 +26,7 @@ func BenchmarkDiscard(b *testing.B) {
 	}
 }
 
-func benchmarkEncodeDecode(b *testing.B, src, dst interface{}) {
+func benchmarkEncodeDecode(b *testing.B, src, dst any) {
 	var buf bytes.Buffer
 	enc := msgpack.NewEncoder(&buf)
 	dec := msgpack.NewDecoder(&buf)
@@ -43,7 +43,7 @@ func benchmarkEncodeDecode(b *testing.B, src, dst interface{}) {
 	}
 }
 
-func benchmarkJSONEncodeDecode(b *testing.B, src, dst interface{}) {
+func benchmarkJSONEncodeDecode(b *testing.B, src, dst any) {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
 	dec := json.NewDecoder(&buf)
@@ -162,24 +162,24 @@ func BenchmarkMapStringStringPtr(b *testing.B) {
 }
 
 func BenchmarkMapStringInterfaceMsgpack(b *testing.B) {
-	src := map[string]interface{}{
+	src := map[string]any{
 		"hello": "world",
 		"foo":   "bar",
 		"one":   1111111,
 		"two":   2222222,
 	}
-	var dst map[string]interface{}
+	var dst map[string]any
 	benchmarkEncodeDecode(b, src, &dst)
 }
 
 func BenchmarkMapStringInterfaceJSON(b *testing.B) {
-	src := map[string]interface{}{
+	src := map[string]any{
 		"hello": "world",
 		"foo":   "bar",
 		"one":   1111111,
 		"two":   2222222,
 	}
-	var dst map[string]interface{}
+	var dst map[string]any
 	benchmarkJSONEncodeDecode(b, src, &dst)
 }
 
@@ -365,11 +365,11 @@ func BenchmarkStructUnmarshalPartially(b *testing.B) {
 }
 
 func BenchmarkQuery(b *testing.B) {
-	var records []map[string]interface{}
+	var records []map[string]any
 	for i := 0; i < 1000; i++ {
-		record := map[string]interface{}{
+		record := map[string]any{
 			"id":    int64(i),
-			"attrs": map[string]interface{}{"phone": int64(i)},
+			"attrs": map[string]any{"phone": int64(i)},
 		}
 		records = append(records, record)
 	}
